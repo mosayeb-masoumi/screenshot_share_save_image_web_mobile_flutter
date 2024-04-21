@@ -18,6 +18,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   GlobalKey key = GlobalKey();
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,6 +28,8 @@ class _HomePageState extends State<HomePage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+
+
           Expanded(
             child: Center(
               child: RepaintBoundary(
@@ -53,7 +56,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          ElevatedButtonWithMenu(onClick: (value) async {
+          ShareButton(onClick: (value) async {
             if (value == "txt") {
               //share text
               _onShareText(context, "gsjgdfjakshg");
@@ -132,7 +135,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _onShareScreenShot(Uint8List screenshot) async {
-
     final box = context.findRenderObject() as RenderBox?;
     await Share.shareXFiles(
       [
@@ -166,63 +168,70 @@ class _HomePageState extends State<HomePage> {
   Future<void> _onSaveImageScreenShotToGalleryWeb(Uint8List screenshot) async {
     if (kIsWeb) {
       await WebImageDownloader.downloadImageFromUInt8List(
-          uInt8List: screenshot);
+          uInt8List: screenshot, name: "name");
     } else {
-      await ImageGallerySaver.saveImage(screenshot);
+      await ImageGallerySaver.saveImage(screenshot, name: "1402/09/02");
     }
   }
 }
 
-class ElevatedButtonWithMenu extends StatefulWidget {
+class ShareButton extends StatefulWidget {
   final Function onClick;
 
-  const ElevatedButtonWithMenu({super.key, required this.onClick});
+  const ShareButton({super.key, required this.onClick});
 
   @override
-  State<ElevatedButtonWithMenu> createState() => _ElevatedButtonWithMenuState();
+  State<ShareButton> createState() => _ShareButtonState();
 }
 
-class _ElevatedButtonWithMenuState extends State<ElevatedButtonWithMenu> {
-  final String text = "gahdskjgkj";
-
+class _ShareButtonState extends State<ShareButton> {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton(
-        tooltip: "show mene",
-        itemBuilder: (BuildContext context) => [
-              const PopupMenuItem(
-                value: 'txt',
-                child: Text('share text'),
-              ),
-              const PopupMenuItem(
-                value: 'imageScreenShot',
-                child: Text('Share image ScreenShot'),
-              ),
-              const PopupMenuItem(
-                value: 'savePng',
-                child: Text('Save image screenShot png'),
-              ),
-              const PopupMenuItem(
-                value: 'imageAssets',
-                child: Text('Share image Assets'),
-              ),
-              const PopupMenuItem(
-                value: 'saveUrl',
-                child: Text('Save image url'),
-              ),
-            ],
-        onSelected: (value) async {
-          widget.onClick(value);
-          // Handle item selection here
-          print('Selected: $value');
-        },
-        child: Container(
-          width: 100,
-          height: 50,
-          color: Colors.green,
-          child: const Center(
-            child: Text("Share"),
-          ),
-        ));
+
+      shape: RoundedRectangleBorder(
+        side: BorderSide(color: Colors.red, width: 2),
+        borderRadius: BorderRadius.circular(25),
+      ),
+      color: Colors.white,
+      tooltip: "",
+      itemBuilder: (BuildContext context) => [
+        const PopupMenuItem(
+          value: 'txt',
+          child: Text('share text'),
+        ),
+        const PopupMenuItem(
+          value: 'imageScreenShot',
+          child: Text('Share image ScreenShot'),
+        ),
+        const PopupMenuItem(
+          value: 'savePng',
+          child: Text('Save image screenShot png'),
+        ),
+        const PopupMenuItem(
+          value: 'imageAssets',
+          child: Text('Share image Assets'),
+        ),
+        const PopupMenuItem(
+          value: 'saveUrl',
+          child: Text('Save image url'),
+        ),
+      ],
+      onSelected: (value) async {
+        widget.onClick(value);
+        // Handle item selection here
+        print('Selected: $value');
+      },
+      child: Container(
+        width: 100,
+        height: 50,
+        color: Colors.green,
+        child: const Center(
+          child: Text("Share"),
+        ),
+      ),
+
+      // offset: const Offset(0, -100),
+    );
   }
 }
